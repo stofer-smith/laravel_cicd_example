@@ -1,4 +1,5 @@
-# laravel_cicd_example
+# Laravel CI/CD Example
+
 Laravel CI/CD Pipeline Example with Kubernetes, ArgoCD, and GitHub Actions
 
 ## Build & Run Containers with Podman
