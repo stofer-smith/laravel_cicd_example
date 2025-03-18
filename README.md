@@ -27,8 +27,8 @@ podman exec -it laravel_app bash
 On the container run in the app root directory (/var/www/html)
 
 ```bash
-composer install
-php artisan key:generate
+composer install &&
+php artisan key:generate &&
 php artisan migrate --seed
 ```
 
