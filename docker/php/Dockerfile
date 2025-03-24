@@ -28,7 +28,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy existing application directory contents
-COPY . /var/www/html
+COPY ./src /var/www/html
 
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/html
@@ -39,3 +39,6 @@ USER www-data
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
+
+# RUN chmod -R 775 storage bootstrap/cache
+# RUN chown -R www-data:www-data storage bootstrap/cache

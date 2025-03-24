@@ -3,7 +3,7 @@ src/
 ##
 z_notes
 .vscode
-
+.DS_Store
 
 /vendor/
 node_modules/
