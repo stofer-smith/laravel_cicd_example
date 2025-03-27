@@ -1,4 +1,7 @@
+
+z_notes/
 .DS_Store
+.vscode
 
 /vendor/
 node_modules/
