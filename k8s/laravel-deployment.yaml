@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: laravel
-        image: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com/laravel-app:latest
+        image: 258002082782.dkr.ecr.us-east-2.amazonaws.com/laravel-app:latest
         ports:
         - containerPort: 9000
         env:
