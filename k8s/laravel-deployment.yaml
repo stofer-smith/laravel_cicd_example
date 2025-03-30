@@ -22,10 +22,10 @@ spec:
         env:
         - name: APP_ENV
           value: "production"
-        - name: DB_HOST
-          value: "<AWS_RDS_ENDPOINT>"
-        - name: REDIS_HOST
-          value: "<AWS_ELASTICACHE_ENDPOINT>"
+        # - name: DB_HOST
+        #   value: "<AWS_RDS_ENDPOINT>"
+        # - name: REDIS_HOST
+        #   value: "<AWS_ELASTICACHE_ENDPOINT>"
         volumeMounts:
         - mountPath: /var/www/html/storage
           name: storage-volume
