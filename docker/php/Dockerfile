@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM --platform=linux/amd64 php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www/html
