@@ -5,7 +5,7 @@ services:
     build:
       context: ./docker/php
       dockerfile: Dockerfile
-    image: digitalocean.com/php
+    image: laravel_app
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
