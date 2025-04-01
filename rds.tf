@@ -22,7 +22,7 @@ data "aws_security_group" "eks_sg" {
 
 # Create Security Group for RDS
 resource "aws_security_group" "rds_sg" {
-  name        = "rds-mysql-sg"
+  name        = "rds-laravel-mysql-sg"
   description = "Allow MySQL traffic from EKS"
   vpc_id      = data.aws_vpc.eks_vpc.id
 
@@ -43,17 +43,17 @@ resource "aws_security_group" "rds_sg" {
 
 # RDS Subnet Group
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds-mysql-subnet-group"
+  name       = "rds-laravel-mysql-subnet-group"
   subnet_ids = data.aws_subnets.private_subnets.ids
 
   tags = {
-    Name = "RDS MySQL Subnet Group"
+    Name = "RDS Laravel MySQL Subnet Group"
   }
 }
 
 # Create RDS MySQL Instance
 resource "aws_db_instance" "rds_mysql" {
-  identifier             = "eks-mysql-db"
+  identifier             = "eks-laravel-mysql-db"
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t3.medium"
@@ -71,10 +71,10 @@ resource "aws_db_instance" "rds_mysql" {
   skip_final_snapshot    = true
 
   tags = {
-    Name = "eks-mysql-rds"
+    Name = "eks-laravel-mysql-rds"
   }
 }
-output "envs" {
-  value = local.envs["DB_DATABASE"]
-  sensitive = true # this is required if the sensitive function was used when loading .env file (more secure way)
-}
+# output "envs" {
+#   value = local.envs["DB_DATABASE"]
+#   sensitive = true # this is required if the sensitive function was used when loading .env file (more secure way)
+# }
