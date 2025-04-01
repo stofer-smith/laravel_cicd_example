@@ -16,14 +16,17 @@ spec:
     spec:
       containers:
       - name: laravel
+        envFrom:
+            - secretRef:
+                name: redis-config
         image: 258002082782.dkr.ecr.us-east-2.amazonaws.com/laravel-app:latest
         ports:
         - containerPort: 9000
         env:
         - name: APP_ENV
           value: "production"
-        # - name: DB_HOST
-        #   value: "<AWS_RDS_ENDPOINT>"
+        - name: DB_HOST
+          value: db-B6MI7TZK5OOWGSN5LM7L6Z2XH4
         # - name: REDIS_HOST
         #   value: "<AWS_ELASTICACHE_ENDPOINT>"
         volumeMounts:

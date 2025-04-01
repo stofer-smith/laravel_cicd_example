@@ -20,15 +20,15 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Login to AWS ECR
+    - name: Login/Authenticate to AWS ECR
       run: |
-        aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+        aws ecr get-login-password | podman login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t laravel-app .
-        docker tag laravel-app:latest ${{ secrets.ECR_REPOSITORY }}:latest
-        docker push ${{ secrets.ECR_REPOSITORY }}:latest
+        podman build -t laravel-app .
+        podman tag laravel-app:latest ${{ secrets.ECR_REPOSITORY }}/laravel-app:latest
+        podman push ${{ secrets.ECR_REPOSITORY }}/laravel-app:latest
 
   deploy:
     needs: build

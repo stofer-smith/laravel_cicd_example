@@ -1,22 +1,36 @@
-resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds-subnet-group"
-  subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+provider "aws" {
+  region = "us-east-2" # Change to your region
+}
 
-  tags = {
-    Name = "rds-subnet-group"
+# Fetch VPC
+data "aws_vpc" "eks_vpc" {
+  id = "vpc-0f0eee1c6b46eda32"
+}
+
+# Fetch Private Subnets
+data "aws_subnets" "private_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.eks_vpc.id]
   }
 }
 
+# Fetch EKS Security Group
+data "aws_security_group" "eks_sg" {
+  id = "sg-02ae692d4efb7242b"
+}
+
+# Create Security Group for RDS
 resource "aws_security_group" "rds_sg" {
-  name        = "rds-security-group"
-  description = "Allow MySQL inbound traffic"
-  vpc_id      = aws_vpc.main.id
+  name        = "rds-laravel-mysql-sg"
+  description = "Allow MySQL traffic from EKS"
+  vpc_id      = data.aws_vpc.eks_vpc.id
 
   ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = ["172.31.0.0/16"]  # Replace with your VPC CIDR or security group
+    security_groups = [data.aws_security_group.eks_sg.id]
   }
 
   egress {
@@ -25,26 +39,42 @@ resource "aws_security_group" "rds_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+# RDS Subnet Group
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = "rds-laravel-mysql-subnet-group"
+  subnet_ids = data.aws_subnets.private_subnets.ids
 
   tags = {
-    Name = "rds-security-group"
+    Name = "RDS Laravel MySQL Subnet Group"
   }
 }
 
-resource "aws_db_instance" "laravel_rds" {
-  identifier           = "laravel-mysql"
-  engine              = "mysql"
-  instance_class       = "db.t3.micro"
-  allocated_storage    = 20
-  username            = "admin"
-  password            = "SuperSecretPass123" # Use AWS Secrets Manager in production!
-  db_name             = "laravel_db"
-  skip_final_snapshot = true
-  publicly_accessible = false
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+# Create RDS MySQL Instance
+resource "aws_db_instance" "rds_mysql" {
+  identifier             = "eks-laravel-mysql-db"
+  engine                 = "mysql"
+  engine_version         = "8.0"
+  instance_class         = "db.t3.medium"
+  allocated_storage      = 20
+  storage_type           = "gp3"
+  db_name                = local.envs["DB_DATABASE"]
+  username               = local.envs["DB_USERNAME"]
+  password               = local.envs["DB_PASSWORD"] # Use AWS Secrets Manager instead for security
+  parameter_group_name   = "default.mysql8.0"
+  multi_az               = false
+  publicly_accessible    = false
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  backup_retention_period = 7
+  skip_final_snapshot    = true
 
   tags = {
-    Name = "Laravel MySQL RDS"
+    Name = "eks-laravel-mysql-rds"
   }
 }
+# output "envs" {
+#   value = local.envs["DB_DATABASE"]
+#   sensitive = true # this is required if the sensitive function was used when loading .env file (more secure way)
+# }
