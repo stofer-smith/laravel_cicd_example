@@ -1,0 +1,21 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "rds:CreateDBSubnetGroup",
+          "rds:ListTagsForResource",
+          "rds:CreateDBInstance",
+          "rds:DeleteDBSubnetGroup",
+          "rds:DeleteDBInstance",
+          "rds:DescribeDBSubnetGroups",
+          "rds:DescribeDBInstances",
+          "rds:ModifyDBInstance",
+          "rds:AddTagsToResource",
+          "rds:ListTagsForResource"
+        ],
+        "Resource": "arn:aws:rds:us-east-2:258002082782:*"
+      }
+    ]
+  }
